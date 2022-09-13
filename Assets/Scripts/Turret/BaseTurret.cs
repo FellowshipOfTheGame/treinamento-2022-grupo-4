@@ -8,9 +8,11 @@ public abstract class BaseTurret : MonoBehaviour
     [SerializeField]protected float _damage;
     [SerializeField]protected float _range;
 
-    protected float _rateOfFire;
-    protected Vector3 _targetPosition;
+    [SerializeField]protected float _rateOfFire;
     protected WaitForSeconds _delay;
+   
+    //talvez repensar
+    protected Vector3 _targetPosition;
     protected bool _loaded;
 
     protected List<GameObject> _targets;
@@ -20,7 +22,7 @@ public abstract class BaseTurret : MonoBehaviour
         private void Start()
         {
             _loaded = true;
-            _rateOfFire = 1.0f;
+            _rateOfFire = 1.5f;
             _delay = new WaitForSeconds(1 / _rateOfFire);
             
             _currTarget = null; 
@@ -75,8 +77,7 @@ public abstract class BaseTurret : MonoBehaviour
         protected abstract void _shoot();
         protected abstract void _upgrade();
     #endregion
-
-
+   
     #region Debug Stuff
         private void OnDrawGizmos()
         {
