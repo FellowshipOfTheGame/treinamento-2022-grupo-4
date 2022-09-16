@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public Rigidbody2D player;
+    public Rigidbody player;
 
     // Update is called once per frame
     void Update()

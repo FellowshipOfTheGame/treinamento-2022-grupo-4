@@ -5,15 +5,17 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public Rigidbody2D rb;
+    public Rigidbody rb;
     
-    Vector2 movement;
-    Vector2 direction;
+    Vector3 movement;
+    Vector3 direction;
     
     KeyCode placeTurretKey = KeyCode.X;
     KeyCode takeTurretKey = KeyCode.Z;
 
     public Turret _turret;
+
+    public GameSystem gameSystem;
 
     // Update is called once per frame
     void Update()
@@ -36,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // movement
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
-        if (movement != Vector2.zero) 
+        if (movement != Vector3.zero) 
         {
             direction = movement.normalized;
         }
@@ -45,21 +47,20 @@ public class PlayerMovement : MonoBehaviour
     void PlaceTurret(Turret turret) 
     {
         var turretPosition = rb.position + direction * 2f;
-        Object.Instantiate(turret, turretPosition, Quaternion.identity);
+        Instantiate(turret, turretPosition, Quaternion.identity);
     }
 
     void TakeTurret() 
     {
         var centerPosition = rb.position + direction * 2f;
-        var boxSize = new Vector2(5, 5);
-        var boxAngle = Vector2.Angle(direction, new Vector2(1, 0));
-        var objectsInFront = Physics2D.OverlapBoxAll(centerPosition, boxSize, boxAngle);
+        var boxSize = new Vector3(5, 5, 10);
+        //var boxAngle = Vector3.Angle(direction, new Vector3(1, 0, 0));
+        var objectsInFront = Physics.OverlapBox(centerPosition, boxSize);
 
         foreach (var obj in objectsInFront) 
         {
-            if (!obj.TryGetComponent<Turret>(out Turret turret)) continue;
-            Debug.Log(turret);
-            Object.Destroy(turret, 2f);
+            if (!obj.TryGetComponent(out Turret turret)) continue;
+            Destroy(turret.gameObject);
         }
     }
 }
