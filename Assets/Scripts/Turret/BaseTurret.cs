@@ -6,7 +6,9 @@ using UnityEngine;
 public abstract class BaseTurret : MonoBehaviour
 {
     [SerializeField]protected float _damage;
+    
     [SerializeField]protected float _range;
+    protected SphereCollider rangeTrigger;
 
     [SerializeField]protected float _rateOfFire;
     protected WaitForSeconds _delay;
@@ -17,6 +19,9 @@ public abstract class BaseTurret : MonoBehaviour
 
     protected List<GameObject> _targets;
     [SerializeField]protected GameObject _currTarget;
+    
+    [SerializeField]protected int current_level = 1, max_level = 4;
+    [SerializeField]protected float damageScaling, rateOfFireScaling, rangeScaling;
 
     #region Base Behaviour
         private void Start()
@@ -25,7 +30,10 @@ public abstract class BaseTurret : MonoBehaviour
             _rateOfFire = 1.5f;
             _delay = new WaitForSeconds(1 / _rateOfFire);
             
-            _currTarget = null; 
+            rangeTrigger = GetComponent<SphereCollider>();
+            rangeTrigger.radius = _range;
+            
+            _currTarget = null;
             _targets = new List<GameObject>();
         }
 
@@ -73,7 +81,9 @@ public abstract class BaseTurret : MonoBehaviour
             _shoot();
             StartCoroutine(Reload());
         }
-        
+
+        public abstract void Upgrade();
+
         protected abstract void _shoot();
         protected abstract void _upgrade();
     #endregion

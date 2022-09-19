@@ -10,7 +10,7 @@ public class ProjectileTurret : BaseTurret
 {
     public GameObject bulletPrefab;
     [SerializeField]private float bulletSpeed;
-    
+    [SerializeField] private float bulletSpeedScaling;
     protected override void _shoot()
     {
         var bullet = Instantiate(bulletPrefab);
@@ -26,8 +26,26 @@ public class ProjectileTurret : BaseTurret
 
     protected override void _upgrade()
     {
-        //TODO Adicionar logica e Os atributos que serao alterados 
-        throw new System.NotImplementedException();
+        if(current_level < max_level)
+        {
+            _damage *= damageScaling;
+            
+            _rateOfFire *= rateOfFireScaling;
+            _delay = new WaitForSeconds(1/_rateOfFire);
+            
+            _range *= rangeScaling;
+            rangeTrigger.radius = _range;
+
+            bulletSpeed *= bulletSpeedScaling;
+            
+            current_level++;
+        }
     }
-    
+
+    public override void Upgrade()
+    {
+        //TODO logica de requisitos.
+        _upgrade();
+    }
+
 }
