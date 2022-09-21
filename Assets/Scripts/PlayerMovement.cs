@@ -12,10 +12,13 @@ public class PlayerMovement : MonoBehaviour
     
     KeyCode placeTurretKey = KeyCode.X;
     KeyCode takeTurretKey = KeyCode.Z;
+    KeyCode moveSelector = KeyCode.Tab;
+    KeyCode buyTurret = KeyCode.Q;
 
-    public Turret _turret;
-
-    public GameSystem gameSystem;
+    [SerializeField]
+    private Inventory _inventory;
+    [SerializeField]
+    private GameSystem _gameSystem;
 
     // Update is called once per frame
     void Update()
@@ -26,12 +29,21 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(placeTurretKey)) 
         {
-            PlaceTurret(_turret);        
+            PlaceTurret();
         }
         if (Input.GetKeyDown(takeTurretKey))
         {
             TakeTurret();
         }
+        if (Input.GetKeyDown(moveSelector))
+        {
+            _gameSystem.MoveSelector();
+        }
+        if (Input.GetKeyDown(buyTurret))
+        {
+            _gameSystem.BuyTurret();
+        }
+
     }
 
     void FixedUpdate()
@@ -44,23 +56,37 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void PlaceTurret(Turret turret) 
+    void PlaceTurret() 
     {
-        var turretPosition = rb.position + direction * 2f;
-        Instantiate(turret, turretPosition, Quaternion.identity);
+        var turret = _gameSystem.GetSelectedTurret();
+        if (_inventory.TryRemoveTurret(turret))
+        {
+            var turretPosition = rb.position + direction * 2f;
+            Instantiate(turret, turretPosition, Quaternion.identity);
+        }
+        else
+        {
+            Debug.Log("No turret");
+        }
     }
 
     void TakeTurret() 
     {
         var centerPosition = rb.position + direction * 2f;
         var boxSize = new Vector3(5, 5, 10);
-        //var boxAngle = Vector3.Angle(direction, new Vector3(1, 0, 0));
         var objectsInFront = Physics.OverlapBox(centerPosition, boxSize);
 
         foreach (var obj in objectsInFront) 
         {
             if (!obj.TryGetComponent(out Turret turret)) continue;
-            Destroy(turret.gameObject);
+            if (_inventory.TryAddTurret(turret))
+            {
+                Destroy(turret.gameObject);
+            }
+            else
+            {
+                Debug.Log("Too much turrets");
+            }
         }
     }
 }
