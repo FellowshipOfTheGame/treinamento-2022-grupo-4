@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class Turret : MonoBehaviour
@@ -15,8 +18,8 @@ public class Turret : MonoBehaviour
     [SerializeField][Range(0f,20f)]private float rateOfFire;
     
     public GameObject bulletPrefab;
-    [SerializeField][Range(0f,40f)]private float bulletSpeed;
-   
+    public GameObject barrelEnd;
+    [SerializeField] [Range(0f, 40f)] private float bulletSpeed;
     private Vector3 _targetPosition;
     private bool _loaded;
 
@@ -34,6 +37,7 @@ public class Turret : MonoBehaviour
         
         currTarget = null;
         _targets = new List<GameObject>();
+
     }
 
     private void Update()
@@ -47,8 +51,14 @@ public class Turret : MonoBehaviour
                 _targets.RemoveAt(0);
             }
         }
-        else if(_loaded) 
-            _shoot();
+        else
+        {
+            this.transform.LookAt(currTarget.transform);
+             
+            if(_loaded)
+                _shoot();
+        }
+
     }
     
     private void OnTriggerEnter(Collider other) {
@@ -76,7 +86,7 @@ public class Turret : MonoBehaviour
         
         //instanciamento do projetil.
         var bullet = Instantiate(bulletPrefab);
-        bullet.transform.position = this.transform.position;
+        bullet.transform.position = barrelEnd.transform.position;
         bullet.GetComponent<Rigidbody>().velocity = 
             bulletSpeed*(currTarget.transform.position - transform.position).normalized ;
         
@@ -108,9 +118,7 @@ public class Turret : MonoBehaviour
         _upgrade();
         //}
     }
-    
-    
-    
+     
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
