@@ -39,12 +39,14 @@ public class GameSystem : MonoBehaviour
 
     public void AddMoney(int money)
     {
-        _money += money;
+        if (_money + money <= _maxMoney)
+            _money += money;
     }
 
     public void MoveSelector()
     {
         if (_selector + 1 == _inventory.InventorySize) _selector = 0;
         else _selector++;
+        _inventory.UpdateSelection(_selector);
     }
 }

@@ -17,6 +17,7 @@ public class Inventory : MonoBehaviour
 
     private Dictionary<Turret, int> _turretInventory = new();
     private int _inventoryWeight = 0;
+    private List<GameObject> _inventoryItems = new();
     
     public int InventorySize => _allTurrets.Count;
 
@@ -27,9 +28,13 @@ public class Inventory : MonoBehaviour
             _turretInventory.Add(turret, 0);
             var item = Instantiate(_inventoryItem, this.transform);
             item.TryGetComponent<Image>(out var turretIcon);
-            var texture = PrefabUtility.GetIconForGameObject(turret.gameObject);
-            turretIcon.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            if (turret.TryGetComponent<Image>(out var texture))
+                turretIcon.sprite = texture.sprite;
+            _inventoryItems.Add(item);
+            UpdateInventoryValue(turret);
         }
+
+        UpdateSelection(0);
     }
 
     public Turret GetSelectedTurret(int selector)
@@ -44,6 +49,7 @@ public class Inventory : MonoBehaviour
         {
             _turretInventory[turret]++;
             _inventoryWeight += turret.Weight;
+            UpdateInventoryValue(turret);
             return true;
         }
         else
@@ -58,11 +64,28 @@ public class Inventory : MonoBehaviour
         {
             _turretInventory[turret]--;
             _inventoryWeight -= turret.Weight;
+            UpdateInventoryValue(turret);
             return true;
         }
         else
         {
             return false;
         }
+    }
+
+    public void UpdateSelection(int selector)
+    {
+        foreach (var item in _inventoryItems)
+        {
+            item.GetComponent<Outline>().effectColor = new Color(255, 0, 0, 0);
+        }
+
+        _inventoryItems[selector].GetComponent<Outline>().effectColor = new Color(255, 0, 0, 100);
+    }
+
+    private void UpdateInventoryValue(Turret turret)
+    {
+        var index = _allTurrets.IndexOf(turret);
+        _inventoryItems[index].GetComponentInChildren<Text>().text = _turretInventory[turret].ToString();
     }
 }

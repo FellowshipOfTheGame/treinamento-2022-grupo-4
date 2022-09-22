@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -58,11 +59,13 @@ public class PlayerMovement : MonoBehaviour
 
     void PlaceTurret() 
     {
+        var turretBase = TryGetTurretBase();
+        if (turretBase == null || turretBase.HasTurret) return;
+
         var turret = _gameSystem.GetSelectedTurret();
         if (_inventory.TryRemoveTurret(turret))
         {
-            var turretPosition = rb.position + direction * 2f;
-            Instantiate(turret, turretPosition, Quaternion.identity);
+            turretBase.PlaceTurret(turret);
         }
         else
         {
@@ -72,21 +75,28 @@ public class PlayerMovement : MonoBehaviour
 
     void TakeTurret() 
     {
+        var turretBase = TryGetTurretBase();
+        if (turretBase == null || !turretBase.HasTurret) return;
+
+        if (_inventory.TryAddTurret(turretBase.Turret))
+        {
+            turretBase.RemoveTurret();
+        }
+        else
+        {
+            Debug.Log("Too much turrets");
+        }
+        
+    }
+
+    TurretBase TryGetTurretBase()
+    {
         var centerPosition = rb.position + direction * 2f;
         var boxSize = new Vector3(5, 5, 10);
         var objectsInFront = Physics.OverlapBox(centerPosition, boxSize);
 
-        foreach (var obj in objectsInFront) 
-        {
-            if (!obj.TryGetComponent(out Turret turret)) continue;
-            if (_inventory.TryAddTurret(turret))
-            {
-                Destroy(turret.gameObject);
-            }
-            else
-            {
-                Debug.Log("Too much turrets");
-            }
-        }
+        TurretBase turretBase = null;
+        objectsInFront.FirstOrDefault(obj => obj.TryGetComponent<TurretBase>(out turretBase));
+        return turretBase;
     }
 }
