@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : MonoBehaviour
+public class __Turret : MonoBehaviour
 {
     public int Cost => 1;
     public int Weight => 5;

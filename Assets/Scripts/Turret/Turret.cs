@@ -7,6 +7,22 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
+    //Parte associada ao inventario
+    public int Cost => 1;
+    public int Weight => 5;
+
+    public int Type;
+    public override int GetHashCode()
+    {
+        return $"Base Turret - {Type} - Raw".GetHashCode();
+    }
+
+    public override bool Equals(object other)
+    {
+        return other.GetHashCode() == this.GetHashCode();
+    }
+    
+    
     [SerializeField]private int currentLevel = 1, maxLevel = 4;
     
     [SerializeField][Range(0f,20.0f)]private float damage;

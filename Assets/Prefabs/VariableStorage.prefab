@@ -45,5 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inimigosRemanescentes: 0
-  round: 9
+  round: 0
   kills: 0
