@@ -15,6 +15,9 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private GameObject _inventoryItem;
 
+    [SerializeField]
+    private GameObject WeightText;
+
     private Dictionary<Turret, int> _turretInventory = new();
     private int _inventoryWeight = 0;
     private List<GameObject> _inventoryItems = new();
@@ -35,6 +38,7 @@ public class Inventory : MonoBehaviour
         }
 
         UpdateSelection(0);
+        UpdateWeight();
     }
 
     public Turret GetSelectedTurret(int selector)
@@ -50,6 +54,7 @@ public class Inventory : MonoBehaviour
             _turretInventory[turret]++;
             _inventoryWeight += turret.Weight;
             UpdateInventoryValue(turret);
+            UpdateWeight();
             return true;
         }
         else
@@ -65,6 +70,7 @@ public class Inventory : MonoBehaviour
             _turretInventory[turret]--;
             _inventoryWeight -= turret.Weight;
             UpdateInventoryValue(turret);
+            UpdateWeight();
             return true;
         }
         else
@@ -87,5 +93,10 @@ public class Inventory : MonoBehaviour
     {
         var index = _allTurrets.IndexOf(turret);
         _inventoryItems[index].GetComponentInChildren<Text>().text = _turretInventory[turret].ToString();
+    }
+
+    private void UpdateWeight()
+    {
+        WeightText.GetComponent<Text>().text = _inventoryWeight.ToString();
     }
 }

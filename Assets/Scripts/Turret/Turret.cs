@@ -69,7 +69,7 @@ public class Turret : MonoBehaviour
         }
         else
         {
-            this.transform.LookAt(currTarget.transform);
+            //this.transform.LookAt(currTarget.transform);
              
             if(_loaded)
                 _shoot();
@@ -135,17 +135,17 @@ public class Turret : MonoBehaviour
         //}
     }
      
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        if(_targets != null)
-            foreach (var target in _targets)
-                if(target) Gizmos.DrawLine(this.transform.position,target.transform.position);
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.green;
+    //    if(_targets != null)
+    //        foreach (var target in _targets)
+    //            if(target) Gizmos.DrawLine(this.transform.position,target.transform.position);
 
-        if (currTarget)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(this.transform.position,currTarget.transform.position);
-        }
-    }
+    //    if (currTarget)
+    //    {
+    //        Gizmos.color = Color.red;
+    //        Gizmos.DrawLine(this.transform.position,currTarget.transform.position);
+    //    }
+    //}
 }

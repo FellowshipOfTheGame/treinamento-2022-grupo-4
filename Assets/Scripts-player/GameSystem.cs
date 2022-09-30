@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSystem : MonoBehaviour
 {
@@ -14,6 +15,14 @@ public class GameSystem : MonoBehaviour
     [SerializeField]
     private int _selector = 0;
 
+    [SerializeField]
+    private GameObject MoneyText;
+
+    private void Start()
+    {
+        UpdateMoney();
+    }
+
     public void BuyTurret()
     {
         var turret = _inventory.GetSelectedTurret(_selector);
@@ -25,7 +34,11 @@ public class GameSystem : MonoBehaviour
         else
         {
             _money -= cost;
-            if (!_inventory.TryAddTurret(turret))
+            if (_inventory.TryAddTurret(turret))
+            {
+                UpdateMoney();
+            }
+            else
             {
                 Debug.Log("Too heavy");
             }
@@ -40,7 +53,10 @@ public class GameSystem : MonoBehaviour
     public void AddMoney(int money)
     {
         if (_money + money <= _maxMoney)
+        {
             _money += money;
+            UpdateMoney();
+        }
     }
 
     public void MoveSelector()
@@ -48,5 +64,10 @@ public class GameSystem : MonoBehaviour
         if (_selector + 1 == _inventory.InventorySize) _selector = 0;
         else _selector++;
         _inventory.UpdateSelection(_selector);
+    }
+
+    private void UpdateMoney()
+    {
+        MoneyText.GetComponent<Text>().text = _money.ToString();
     }
 }
